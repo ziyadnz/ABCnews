@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1014082709087",
+    "firebase_url": "https://web-haber.firebaseio.com",
+    "project_id": "web-haber",
+    "storage_bucket": "web-haber.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014082709087:android:265beb91200ee572e15dea",
+        "android_client_info": {
+          "package_name": "ziyadeniz.web_wiew_news"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014082709087-ep9plum2pqgijj4ulq66n0mdb2mn722j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ziyadeniz.web_wiew_news",
+            "certificate_hash": "3c94fe91ab6c6d2f71c8bab4621f13b86d7505b5"
+          }
+        },
+        {
+          "client_id": "1014082709087-1r50vg7sit2kmf1mb4b70k5kctiaat0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5g6KrumCJsk7tdPzwP4Xtf7wLwp7ZcQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014082709087-1r50vg7sit2kmf1mb4b70k5kctiaat0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
