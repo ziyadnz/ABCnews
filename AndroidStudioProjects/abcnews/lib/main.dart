@@ -1,67 +1,65 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
+void main() => runApp(MyApp());
 
-void main() => runApp(MaterialApp(
-  title: 'Flutter Browser',
-  theme: ThemeData(
-    primarySwatch: Colors.deepOrange,
-  ),
-  home: MyHomePage(),
-));
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'App'),
+    );
+  }
+}
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  WebViewController _webViewController;
-  TextEditingController _teController = new TextEditingController();
-  bool showLoading = false;
-
-
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,      //bunla klawye acılma ayarı
+      resizeToAvoidBottomInset: false,
       body: Container(
-        color: Colors.black,    //unsafe area color
+        color: Colors.black,
         child: SafeArea(
-
-          child: Container(
-            
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,   // ekrana yerleştiriyo width: MediaQuery.of(context).size.width*0.5 yaparsan arısından yapar
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Flexible(
-                    child: Stack(
-                      children: <Widget>[
-                        WebView(
-                          initialUrl: 'https://abcgazetesi.com/',
-                          javascriptMode: JavascriptMode.unrestricted,
-                          onPageFinished: (data){
-                          },
-
-                          onWebViewCreated: (webViewController){
-                            _webViewController = webViewController;
-                          },
-                        ),
-                        (showLoading)?Center(child: CircularProgressIndicator(),):Center()  //bununla yuklendikten sonra olusturulur
-                      ],
-                    )
-                ),
-              ],
-            ),
+          child: WebView(
+            initialUrl: "https://abcgazetesi.com/",
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller.complete(webViewController);
+            },
           ),
         ),
+      ),
+      floatingActionButton: FutureBuilder<WebViewController>(
+          future: _controller.future,
+          builder: (BuildContext context,
+              AsyncSnapshot<WebViewController> controller) {
+            if (controller.hasData) {
+              return FloatingActionButton(
+                  child: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    controller.data.goBack();
+                  });
+            }
+
+            return Container();
+          }
       ),
     );
   }
