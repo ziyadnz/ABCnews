@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "157564985666",
+    "firebase_url": "https://abc-news-44cae.firebaseio.com",
+    "project_id": "abc-news-44cae",
+    "storage_bucket": "abc-news-44cae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157564985666:android:a4372e78431dab832328db",
+        "android_client_info": {
+          "package_name": "com.cmbilisim.abcnews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157564985666-qoep4p460t1dmsr9avo1f4rbibo0rovo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cmbilisim.abcnews",
+            "certificate_hash": "3c94fe91ab6c6d2f71c8bab4621f13b86d7505b5"
+          }
+        },
+        {
+          "client_id": "157564985666-mia8chrsqornog7mdh77qfuuq53v0cnv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt-e59EFD2lLx7aFbBLemvTr_WhLmldYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157564985666-mia8chrsqornog7mdh77qfuuq53v0cnv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

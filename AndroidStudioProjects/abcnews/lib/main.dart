@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -9,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'App',
+      title: 'PUSULA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -67,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.black,
           child: SafeArea(
             child: WebView(
-              initialUrl: "https://abcgazetesi.com",
+              initialUrl: "https://www.pusulahaber.com.tr",
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) {
                 _controller.complete(webViewController);
