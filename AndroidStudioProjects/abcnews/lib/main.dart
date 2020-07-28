@@ -47,9 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         WebView(
                           initialUrl: 'https://abcgazetesi.com/',
                           javascriptMode: JavascriptMode.unrestricted,
-
                           onPageFinished: (data){
-
                           },
 
                           onWebViewCreated: (webViewController){
