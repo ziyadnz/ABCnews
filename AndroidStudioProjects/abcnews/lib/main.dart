@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.black,
         child: SafeArea(
           child: WebView(
-            initialUrl: "https://abcgazetesi.com/",
+            initialUrl: "https://abcgazetesi.com",
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (WebViewController webViewController) {
               _controller.complete(webViewController);
