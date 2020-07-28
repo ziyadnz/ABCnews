@@ -30,19 +30,49 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
 
+  Future<bool> _onBackPressed() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Uygulamadan Çık'),
+            content: Text('Bu uygulamadan çıkmak istediğinize emin misiniz?'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('HAYIR'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('EVET'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        color: Colors.black,
-        child: SafeArea(
-          child: WebView(
-            initialUrl: "https://abcgazetesi.com",
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) {
-              _controller.complete(webViewController);
-            },
+      body: WillPopScope(
+        onWillPop: _onBackPressed,
+
+        child: Container(
+          
+          color: Colors.black,
+          child: SafeArea(
+            child: WebView(
+              initialUrl: "https://abcgazetesi.com",
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) {
+                _controller.complete(webViewController);
+              },
+            ),
           ),
         ),
       ),
