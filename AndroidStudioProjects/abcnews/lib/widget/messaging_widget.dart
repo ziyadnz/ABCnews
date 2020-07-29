@@ -2,6 +2,10 @@ import 'package:abcnews/model/message.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
+
+/*mapping into the message.dart
+with on State&Launch&Resume steps u can choose push message options
+*/
 class MessagingWidget extends StatefulWidget {
   @override
   _MessagingWidgetState createState() => _MessagingWidgetState();
