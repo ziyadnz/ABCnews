@@ -3,28 +3,19 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
+
   final String title;
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Completer<WebViewController> _controller = Completer<
-      WebViewController>();
-
-  Widget _buildWebView() {
-    return WebView(
-      javascriptMode: JavascriptMode.unrestricted,
-      gestureNavigationEnabled: true,
-      initialUrl: 'https://www.pusulahaber.com.tr',
-      onWebViewCreated: (WebViewController webViewController) {
-        _controller.complete(webViewController);
-      },
-    );
-  }
-
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
 
   Future<bool> _onBackPressed() {
     return showDialog(
@@ -54,11 +45,41 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('SPEED'),
-      ),
-      body: _buildWebView(),
+      resizeToAvoidBottomInset: false,
+      body: WillPopScope(
+        onWillPop: _onBackPressed,
 
+        child: Container(
+
+          color: Colors.black,
+          child: SafeArea(
+            child: WebView(
+              initialUrl: "https://www.pusulahaber.com.tr",
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) {
+                _controller.complete(webViewController); // WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget.
+
+
+              },
+            ),
+          ),
+        ),
+      ),
+      floatingActionButton: FutureBuilder<WebViewController>(   //burası geri tusu
+          future: _controller.future,
+          builder: (BuildContext context,
+              AsyncSnapshot<WebViewController> controller) {
+            if (controller.hasData) {
+              return FloatingActionButton(
+                  child: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    controller.data.goBack();
+                  });
+            }
+
+            return Container();
+          }
+      ),
     );
   }
 }
