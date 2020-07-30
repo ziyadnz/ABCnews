@@ -45,21 +45,34 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       resizeToAvoidBottomInset: false,
-      body: WillPopScope(
-        onWillPop: _onBackPressed,
-
-        child: SafeArea(
-            child: WebView(
+      body: SafeArea(
+        child: WillPopScope(
+          onWillPop: _onBackPressed,
+          child: WebView(
               initialUrl: "https://www.pusulahaber.com.tr",
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) {
                 _controller.complete(webViewController); // WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget.
               },
-
+            javascriptChannels: <JavascriptChannel>[
+              _toasterJavascriptChannel(context),
+            ].toSet(),
+            navigationDelegate: (NavigationRequest request) async{
+              if (request.url.startsWith('https://www.pusulahaber.com.tr')) {
+                print('allowing navigation to $request}');
+                return NavigationDecision.navigate;
+              }
+              print('no restriction to go this page $request');
+              return NavigationDecision.prevent;
+            },
+            onPageFinished: (String url) {
+              print('Page finished loading: $url');
+            },
 
             ),
-          ),
+        ),
       ),
 
       floatingActionButton: FutureBuilder<WebViewController>(   //burası geri tusu
@@ -77,6 +90,21 @@ class _MyHomePageState extends State<MyHomePage> {
             return Container();
           }
       ),
+
+
+
     );
   }
+
+  JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
+    return JavascriptChannel(
+        name: 'Toaster',
+        onMessageReceived: (JavascriptMessage message) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(content: Text(message.message)),
+          );
+        });
+  }
+
+
 }
