@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true, //bu kolayca kaymasını saglıyo
       body: SafeArea(
         child: WillPopScope(
           onWillPop: _onBackPressed,
