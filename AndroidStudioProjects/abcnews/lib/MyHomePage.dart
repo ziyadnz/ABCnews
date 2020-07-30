@@ -49,22 +49,19 @@ class _MyHomePageState extends State<MyHomePage> {
       body: WillPopScope(
         onWillPop: _onBackPressed,
 
-        child: Container(
-
-          color: Colors.black,
-          child: SafeArea(
+        child: SafeArea(
             child: WebView(
               initialUrl: "https://www.pusulahaber.com.tr",
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) {
                 _controller.complete(webViewController); // WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget.
-
-
               },
+
+
             ),
           ),
-        ),
       ),
+
       floatingActionButton: FutureBuilder<WebViewController>(   //burası geri tusu
           future: _controller.future,
           builder: (BuildContext context,

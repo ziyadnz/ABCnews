@@ -11,7 +11,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PUSULA',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.blue[400], //arkasının rengini ayarlıyor,
+
       ),
       home: MyHomePage(title: 'App'),
     );

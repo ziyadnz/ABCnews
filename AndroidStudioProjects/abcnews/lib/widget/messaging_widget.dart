@@ -28,7 +28,7 @@ class _MessagingWidgetState extends State<MessagingWidget> {
         });
       },
       onLaunch: (Map<String, dynamic>message) async {       //iff app is closed
-        print("onLaunch: $message");
+       print("onLaunch: $message");
       },
       onResume: (Map<String, dynamic>message) async {       //click notification continue with this //**WHEN APP IS OPEN***
         print("onResume: $message");
