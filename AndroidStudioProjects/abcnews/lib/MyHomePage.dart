@@ -18,24 +18,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
   Future<void> _launched;
-
-
-  Future<void> _launchInBrowser(String url) async {
-    if (await canLaunch(url)) {
-      await launch(
-        url,
-        forceSafariVC: true,
-        forceWebView: false,
-        headers: <String, String>{'header_key': 'header_value'},
-      );
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-
-
-
+  
 
   Future<bool> _onBackPressed() {
     return showDialog(
