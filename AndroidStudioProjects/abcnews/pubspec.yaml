@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  url_launcher:
   firebase_messaging:
   webview_flutter: ^0.3.22+1
   flutter:

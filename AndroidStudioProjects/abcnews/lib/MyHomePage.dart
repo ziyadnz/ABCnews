@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 
@@ -16,6 +17,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
+  Future<void> _launched;
+
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: true,
+        forceWebView: false,
+        headers: <String, String>{'header_key': 'header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+
+
+
 
   Future<bool> _onBackPressed() {
     return showDialog(
@@ -65,6 +85,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 return NavigationDecision.navigate;
               }
               print('no restriction to go this page $request');
+              if (await canLaunch(request.url)) {
+                await launch(
+                  request.url,
+                  forceSafariVC: true,
+                  forceWebView: false,
+                  headers: <String, String>{'header_key': 'header_value'},
+                );
+              } else {
+                throw 'Could not launch $request.url';
+              }
               return NavigationDecision.prevent;
             },
             onPageFinished: (String url) {
