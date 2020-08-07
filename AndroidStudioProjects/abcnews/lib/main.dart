@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'PUSULA',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.blue[400], //arkasının rengini ayarlıyor,
