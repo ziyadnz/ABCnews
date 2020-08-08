@@ -81,26 +81,28 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         });
   }
-
   @override
   Widget build(BuildContext context) {
-    bool internet = false;
+    var internet;
+    var result;
+
     _checkInternetConnectivity() async {
-      var result = await Connectivity().checkConnectivity();
+       result = await Connectivity().checkConnectivity();
 
       if (result == ConnectivityResult.none) {
-         internet = false; //No connection
+        internet = ConnectivityResult.none;
         return result;
       } else if (result == ConnectivityResult.mobile) {
-        internet = true;
+        internet = ConnectivityResult.mobile;
         return result;
       } else if (result == ConnectivityResult.wifi) {
-        internet = true;
+        internet = ConnectivityResult.wifi;
         return result;
       }
     }
 
-    if (internet == false) {
+    if (internet != ConnectivityResult.wifi || internet== ConnectivityResult.mobile) { //variableler null dönüyo
+
       return Scaffold(
         resizeToAvoidBottomInset: true,
         //bu kolayca kaymasını saglıyo  //keyboard açılınca yeri sabit kalıyor
@@ -161,14 +163,16 @@ class _MyHomePageState extends State<MyHomePage> {
               return Container();
             }),
       );
-    } else
+    } else {
+      print('$internet');
       return Scaffold(
         backgroundColor: Colors.blue,
         body: Center(
-            child: Text('Hello World'),
-          ),
+          child: Text('Hello World'),
+        ),
 
       );
+    }
   }
 
   JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
