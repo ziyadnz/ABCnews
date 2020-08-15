@@ -83,12 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     getDeviceinfo();
-    _checkInternetConnectivity().then(value){
-      setState(() {
-         internet = value;
-      });
-      
-    };
+    _checkInternetConnectivity()
+   
   }
 
   void getDeviceinfo() async {
