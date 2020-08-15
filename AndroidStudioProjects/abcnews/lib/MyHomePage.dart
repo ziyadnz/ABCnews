@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -20,42 +21,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
-  Future<void> _launched;
-
-  @override
-  OfflineBuilder _check() {
-    //check if it is offline or online
-    return OfflineBuilder(
-      connectivityBuilder: (
-        BuildContext context,
-        ConnectivityResult connectivity,
-        Widget child,
-      ) {
-        final bool connected = connectivity != ConnectivityResult.none;
-        return new Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned(
-              height: 24.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                color: connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
-                child: Center(
-                  child: Text("${connected ? 'ONLINE' : 'OFFLINE'}"),
-                ),
-              ),
-            ),
-            Center(
-              child: new Text(
-                'Yay!',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Future<bool> _onBackPressed() {
     return showDialog(
@@ -82,25 +47,69 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  bool internet;
+  Future<ConnectivityResult> _checkInternetConnectivity() async {
+    var result = await Connectivity().checkConnectivity();
+
+    if (result == ConnectivityResult.none) {
+      internet = false; //No connection
+      print('internet in future $internet');
+      return result;
+    } else if (result == ConnectivityResult.mobile) {
+      internet = true;
+      print('internet in future $internet');
+      return result;
+    } else if (result == ConnectivityResult.wifi) {
+      internet = true;
+      print('internet in future $internet');
+      return result;
+    }
+    return result;
+  }
+
+/* To take device infos */
+  DeviceInfoPlugin deviceInfo =
+      DeviceInfoPlugin(); // instantiate device info plugin
+  AndroidDeviceInfo androidDeviceInfo;
+
+  String board,
+      /* brand,device,hardware,host,id,product,type,androidid, */
+      manufacture,
+      model;
+
+  bool isphysicaldevice;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDeviceinfo();
+    _checkInternetConnectivity().then(value){
+      setState(() {
+         internet = value;
+      });
+      
+    };
+  }
+
+  void getDeviceinfo() async {
+    androidDeviceInfo = await deviceInfo
+        .androidInfo; // instantiate Android Device Infoformation
+    setState(() {
+      /* board = androidDeviceInfo.board;brand = androidDeviceInfo.brand;device = androidDeviceInfo.device;hardware = androidDeviceInfo.hardware;host = androidDeviceInfo.host;id = androidDeviceInfo.id; */
+      manufacture = androidDeviceInfo.manufacturer;
+      model = androidDeviceInfo.model;
+      /* product = androidDeviceInfo.product;type = androidDeviceInfo.type;isphysicaldevice = androidDeviceInfo.isPhysicalDevice;androidid = androidDeviceInfo.androidId; */
+    });
+    print('Manufacture $manufacture');
+    print('Model $model');
+  }
+  /* End of device info */
+
   @override
   Widget build(BuildContext context) {
-    bool internet = false;
-    _checkInternetConnectivity() async {
-      var result = await Connectivity().checkConnectivity();
-
-      if (result == ConnectivityResult.none) {
-         internet = false; //No connection
-        return result;
-      } else if (result == ConnectivityResult.mobile) {
-        internet = true;
-        return result;
-      } else if (result == ConnectivityResult.wifi) {
-        internet = true;
-        return result;
-      }
-    }
-
-    if (internet == false) {
+    _checkInternetConnectivity();
+    if (internet == true) {
+      print('in if $internet');
       return Scaffold(
         resizeToAvoidBottomInset: true,
         //bu kolayca kaymasını saglıyo  //keyboard açılınca yeri sabit kalıyor
@@ -108,14 +117,14 @@ class _MyHomePageState extends State<MyHomePage> {
           child: WillPopScope(
             onWillPop: _onBackPressed,
             child: WebView(
-              onWebResourceError: (WebResourceError) {
+              onWebResourceError: (WebResourceError webviewer) {
                 print("No Connection solve it");
               },
               initialUrl: "https://www.pusulahaber.com.tr",
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webViewController) {
-                _controller.complete(
-                    webViewController); // WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget.
+                /* WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget. */
+                _controller.complete(webViewController);
               },
               javascriptChannels: <JavascriptChannel>[
                 _toasterJavascriptChannel(context),
@@ -145,38 +154,41 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
 
+        /*    burası geri tusu    */
         floatingActionButton: FutureBuilder<WebViewController>(
-            //burası geri tusu
             future: _controller.future,
             builder: (BuildContext context,
                 AsyncSnapshot<WebViewController> controller) {
               if (controller.hasData) {
                 return FloatingActionButton(
-                    child: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      controller.data.goBack();
-                    });
+                  child: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    controller.data.goBack();
+                  },
+                );
               }
 
               return Container();
             }),
       );
-    } else
+    } else //if no internet connection show this page
       return Scaffold(
         backgroundColor: Colors.blue,
         body: Center(
-            child: Text('Hello World'),
-          ),
-
+          child: Text('Hello World'),
+        ),
       );
   }
 
+  /* For firebase */
   JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'Toaster',
         onMessageReceived: (JavascriptMessage message) {
           Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text(message.message)),
+            SnackBar(
+              content: Text(message.message),
+            ),
           );
         });
   }

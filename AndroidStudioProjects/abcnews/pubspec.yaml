@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  device_info:
   flutter_offline: "^0.3.0"
   connectivity:
   url_launcher:
