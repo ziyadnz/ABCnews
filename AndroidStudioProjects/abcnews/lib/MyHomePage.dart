@@ -52,16 +52,24 @@ class _MyHomePageState extends State<MyHomePage> {
     var result = await Connectivity().checkConnectivity();
 
     if (result == ConnectivityResult.none) {
-      internet = false; //No connection
+      setState(() {
+         internet = false; //No connection
       print('internet in future $internet');
+      });
       return result;
     } else if (result == ConnectivityResult.mobile) {
-      internet = true;
+      setState(() {
+           internet = true;
       print('internet in future $internet');
+      });
+   
       return result;
     } else if (result == ConnectivityResult.wifi) {
-      internet = true;
+      setState(() {
+              internet = true;
       print('internet in future $internet');
+      });
+
       return result;
     }
     return result;
@@ -79,11 +87,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool isphysicaldevice;
   @override
-  void initState() {
+  void initState() { //tek sefer çalışır uygulama açıldığında
     // TODO: implement initState
     super.initState();
     getDeviceinfo();
-    _checkInternetConnectivity()
+    _checkInternetConnectivity();
    
   }
 
@@ -103,17 +111,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _checkInternetConnectivity();
-    if (internet == true) {
-      print('in if $internet');
+    
       return Scaffold(
         resizeToAvoidBottomInset: true,
         //bu kolayca kaymasını saglıyo  //keyboard açılınca yeri sabit kalıyor
-        body: SafeArea(
+        body: internet?SafeArea(
           child: WillPopScope(
             onWillPop: _onBackPressed,
             child: WebView(
               onWebResourceError: (WebResourceError webviewer) {
+                setState(() {
+                  internet=false;
+                });
                 print("No Connection solve it");
               },
               initialUrl: "https://www.pusulahaber.com.tr",
@@ -144,36 +153,25 @@ class _MyHomePageState extends State<MyHomePage> {
                 return NavigationDecision.prevent;
               },
               onPageFinished: (String url) {
+              
                 print('Page finished loading: $url');
               },
             ),
           ),
-        ),
+        ):Center(child: Text("İnternet Yok"),),
 
         /*    burası geri tusu    */
-        floatingActionButton: FutureBuilder<WebViewController>(
-            future: _controller.future,
-            builder: (BuildContext context,
-                AsyncSnapshot<WebViewController> controller) {
-              if (controller.hasData) {
-                return FloatingActionButton(
-                  child: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    controller.data.goBack();
-                  },
-                );
-              }
-
-              return Container();
-            }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+          }
+        
+            ),
       );
-    } else //if no internet connection show this page
-      return Scaffold(
-        backgroundColor: Colors.blue,
-        body: Center(
-          child: Text('Hello World'),
-        ),
-      );
+     
   }
 
   /* For firebase */
