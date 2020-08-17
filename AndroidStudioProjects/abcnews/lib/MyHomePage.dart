@@ -53,21 +53,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result == ConnectivityResult.none) {
       setState(() {
-         internet = false; //No connection
-      print('internet in future $internet');
+        internet = false; //No connection
+        print('internet in future $internet');
       });
       return result;
     } else if (result == ConnectivityResult.mobile) {
       setState(() {
-           internet = true;
-      print('internet in future $internet');
+        internet = true;
+        print('internet in future $internet');
       });
-   
+
       return result;
     } else if (result == ConnectivityResult.wifi) {
       setState(() {
-              internet = true;
-      print('internet in future $internet');
+        internet = true;
+        print('internet in future $internet');
       });
 
       return result;
@@ -87,12 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool isphysicaldevice;
   @override
-  void initState() { //tek sefer çalışır uygulama açıldığında
+  void initState() {
+    //tek sefer çalışır uygulama açıldığında
     // TODO: implement initState
     super.initState();
     getDeviceinfo();
     _checkInternetConnectivity();
-   
   }
 
   void getDeviceinfo() async {
@@ -111,67 +111,69 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
-      return Scaffold(
-        resizeToAvoidBottomInset: true,
-        //bu kolayca kaymasını saglıyo  //keyboard açılınca yeri sabit kalıyor
-        body: internet?SafeArea(
-          child: WillPopScope(
-            onWillPop: _onBackPressed,
-            child: WebView(
-              onWebResourceError: (WebResourceError webviewer) {
-                setState(() {
-                  internet=false;
-                });
-                print("No Connection solve it");
-              },
-              initialUrl: "https://www.pusulahaber.com.tr",
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: (WebViewController webViewController) {
-                /* WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget. */
-                _controller.complete(webViewController);
-              },
-              javascriptChannels: <JavascriptChannel>[
-                _toasterJavascriptChannel(context),
-              ].toSet(),
-              navigationDelegate: (NavigationRequest request) async {
-                if (request.url.startsWith('https://www.pusulahaber.com.tr')) {
-                  print('allowing navigation to $request}');
-                  return NavigationDecision.navigate;
-                }
-                print('no restriction to go this page $request');
-                if (await canLaunch(request.url)) {
-                  await launch(
-                    request.url,
-                    forceSafariVC: true,
-                    forceWebView: false,
-                    headers: <String, String>{'header_key': 'header_value'},
-                  );
-                } else {
-                  throw 'Could not launch $request.url';
-                }
-                return NavigationDecision.prevent;
-              },
-              onPageFinished: (String url) {
-              
-                print('Page finished loading: $url');
-              },
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      //bu kolayca kaymasını saglıyo  //keyboard açılınca yeri sabit kalıyor
+      body: internet
+          ? SafeArea(
+              child: WillPopScope(
+                onWillPop: _onBackPressed,
+                child: WebView(
+                  onWebResourceError: (WebResourceError webviewer) {
+                    setState(() {
+                      internet = false;
+                    });
+                    print("No Connection solve it");
+                  },
+                  initialUrl: "https://www.pusulahaber.com.tr",
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onWebViewCreated: (WebViewController webViewController) {
+                    /* WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget. */
+                    _controller.complete(webViewController);
+                  },
+                  javascriptChannels: <JavascriptChannel>[
+                    _toasterJavascriptChannel(context),
+                  ].toSet(),
+                  navigationDelegate: (NavigationRequest request) async {
+                    if (request.url
+                        .startsWith('https://www.pusulahaber.com.tr')) {
+                      return NavigationDecision.navigate;
+                    }
+                    print('no restriction to go this page $request');
+                    /* if launch with browser */
+                    if (await canLaunch(request.url)) {
+                      await launch(
+                        request.url,
+                        forceSafariVC: true,
+                        forceWebView: false,
+                        headers: <String, String>{'header_key': 'header_value'},
+                      );
+                    } else {
+                      throw 'Could not launch $request.url';
+                    }
+                    return NavigationDecision.prevent;
+                  },
+                  onPageFinished: (String url) {
+                    print('Page finished loading: $url');
+                  },
+                ),
+              ),
+            )
+          : Center(
+              child: Text("İnternete Bağlanılamadı"),
             ),
-          ),
-        ):Center(child: Text("İnternet Yok"),),
 
-        /*    burası geri tusu    */
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
-            );
-          }
-        
-            ),
-      );
-     
+      /*    burası geri tusu    */
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.refresh),
+        backgroundColor: Colors.blueAccent,
+        onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
+      }),
+    );
   }
 
   /* For firebase */
