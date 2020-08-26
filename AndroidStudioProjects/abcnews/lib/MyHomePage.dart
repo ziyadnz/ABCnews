@@ -163,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("İnternete Bağlanılamadı"),
             ),
 
-      /*    burası geri tusu    */
+      /*    burası geri tusu refresh   */
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.refresh),
         backgroundColor: Colors.blueAccent,
