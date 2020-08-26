@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
@@ -8,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/rendering.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -56,21 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
         internet = false; //No connection
         print('internet in future $internet');
       });
-      return result;
-    } else if (result == ConnectivityResult.mobile) {
+    } else if (result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi) {
       setState(() {
         internet = true;
         print('internet in future $internet');
       });
-
-      return result;
-    } else if (result == ConnectivityResult.wifi) {
-      setState(() {
-        internet = true;
-        print('internet in future $internet');
-      });
-
-      return result;
     }
     return result;
   }
@@ -163,16 +154,16 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("İnternete Bağlanılamadı"),
             ),
 
-      /*    burası geri tusu    */
+      /*    burası geri tusu refresh   */
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
-        backgroundColor: Colors.blueAccent,
-        onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-        );
-      }),
+          child: Icon(Icons.refresh),
+          backgroundColor: Colors.blueAccent,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+          }),
     );
   }
 
