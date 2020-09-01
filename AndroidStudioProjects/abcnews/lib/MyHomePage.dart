@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onRefresh: () {
                 Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
+              MaterialPageRoute(builder: (context) => MyHomePage()), //when refresh render homepage widget
             );
               }, //it give us a blank page
             ),
