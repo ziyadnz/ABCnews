@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //at here you are deploying firebase messages
 
 @immutable
-class Message{
+class Message {
   final String title;
   final String body;
 
@@ -11,5 +11,4 @@ class Message{
     @required this.title,
     @required this.body,
   });
-
 }

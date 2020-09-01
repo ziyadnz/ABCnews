@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'MyHomePage.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
+import './MyHomePage.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,11 +12,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PUSULA',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.blue[400], //arkasının rengini ayarlıyor,
-
+        scaffoldBackgroundColor:
+            Colors.blue[400], //arkasının rengini ayarlıyor,
       ),
       home: MyHomePage(title: 'App'),
     );
   }
 }
-

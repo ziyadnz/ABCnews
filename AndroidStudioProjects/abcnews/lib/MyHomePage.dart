@@ -1,5 +1,5 @@
+import 'package:abcnews/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/rendering.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -19,35 +20,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Completer<WebViewController> _controller =
+  final Completer<WebViewController> _controllerCompleter =
       Completer<WebViewController>();
 
-  Future<bool> _onBackPressed() {
-    return showDialog(
+  WebViewController _controller;
+
+  Future<bool> _exitApp(BuildContext context) async {
+    //try with
+    if (await _controller.canGoBack()) {
+      _controller.goBack();
+      return Future.value(false);
+    } else {
+      showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Uygulamadan Çık'),
-            content: Text('Bu uygulamadan çıkmak istediğinize emin misiniz?'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('HAYIR'),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-              FlatButton(
-                child: Text('EVET'),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-            ],
-          );
-        });
+        builder: (context) => AlertDialog(
+          title: Text('Uygulamadan Çık'),
+          content: Text('Bu uygulamadan çıkmak istediğinize emin misiniz?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('HAYIR'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('EVET'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        ),
+      );
+    }
+    return Future.value(true);
   }
 
-  bool internet;
+  @override
+  void initState() {
+    //tek sefer çalışır uygulama açıldığında
+    // TODO: implement initState
+    super.initState();
+    getDeviceinfo();
+    _checkInternetConnectivity();
+  }
+
+  bool internet = false;
   Future<ConnectivityResult> _checkInternetConnectivity() async {
     var result = await Connectivity().checkConnectivity();
 
@@ -56,21 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
         internet = false; //No connection
         print('internet in future $internet');
       });
-      return result;
-    } else if (result == ConnectivityResult.mobile) {
+    } else if (result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi) {
       setState(() {
         internet = true;
         print('internet in future $internet');
       });
-
-      return result;
-    } else if (result == ConnectivityResult.wifi) {
-      setState(() {
-        internet = true;
-        print('internet in future $internet');
-      });
-
-      return result;
     }
     return result;
   }
@@ -86,14 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
       model;
 
   bool isphysicaldevice;
-  @override
-  void initState() {
-    //tek sefer çalışır uygulama açıldığında
-    // TODO: implement initState
-    super.initState();
-    getDeviceinfo();
-    _checkInternetConnectivity();
-  }
 
   void getDeviceinfo() async {
     androidDeviceInfo = await deviceInfo
@@ -117,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: internet
           ? SafeArea(
               child: WillPopScope(
-                onWillPop: _onBackPressed,
+                onWillPop: () => _exitApp(context),
                 child: WebView(
                   onWebResourceError: (WebResourceError webviewer) {
                     setState(() {
@@ -129,7 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (WebViewController webViewController) {
                     /* WebViewController instance can be obtained by setting the WebView.onWebViewCreated callback for a WebView widget. */
-                    _controller.complete(webViewController);
+                    _controllerCompleter.future
+                        .then((value) => _controller = value);
+                    _controllerCompleter.complete(webViewController);
                   },
                   javascriptChannels: <JavascriptChannel>[
                     _toasterJavascriptChannel(context),
@@ -159,20 +162,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             )
-          : Center(
-              child: Text("İnternete Bağlanılamadı"),
+          : RefreshIndicator(
+              child: ListView(
+                children: [
+                  Center(
+                    child: Text("İnternete Bağlanılamadı"),
+                  ),
+                ],
+              ),
+              // ignore: missing_return
+              onRefresh: () {
+                Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+              }, //it give us a blank page
             ),
 
-      /*    burası geri tusu refresh   */
+      /*    burası  refresh tusu  */
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
-        backgroundColor: Colors.blueAccent,
-        onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-        );
-      }),
+          child: Icon(Icons.refresh),
+          backgroundColor: Colors.blueAccent,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+            );
+          }),
     );
   }
 

@@ -24,39 +24,39 @@ class NavigationControls extends StatelessWidget {
               onPressed: !webViewReady
                   ? null
                   : () async {
-                if (await controller.canGoBack()) {
-                  controller.goBack();
-                } else {
-                  Scaffold.of(context).showSnackBar(
-                    const SnackBar(content: Text("No back history item")),
-                  );
-                  return;
-                }
-              },
+                      if (await controller.canGoBack()) {
+                        controller.goBack();
+                      } else {
+                        Scaffold.of(context).showSnackBar(
+                          const SnackBar(content: Text("No back history item")),
+                        );
+                        return;
+                      }
+                    },
             ),
             IconButton(
               icon: const Icon(Icons.arrow_forward_ios),
               onPressed: !webViewReady
                   ? null
                   : () async {
-                if (await controller.canGoForward()) {
-                  controller.goForward();
-                } else {
-                  Scaffold.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text("No forward history item")),
-                  );
-                  return;
-                }
-              },
+                      if (await controller.canGoForward()) {
+                        controller.goForward();
+                      } else {
+                        Scaffold.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("No forward history item")),
+                        );
+                        return;
+                      }
+                    },
             ),
             IconButton(
               icon: const Icon(Icons.replay),
               onPressed: !webViewReady
                   ? null
                   : () {
-                controller.reload();
-              },
+                      controller.reload();
+                    },
             ),
           ],
         );
